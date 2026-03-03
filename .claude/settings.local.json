@@ -1,0 +1,8 @@
+{
+  "enabledMcpjsonServers": [
+    "browser",
+    "context7",
+    "desktop-commander"
+  ],
+  "enableAllProjectMcpServers": true
+}

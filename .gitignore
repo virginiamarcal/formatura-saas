@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# AIOS Framework (generated)
+.aios/
+.aios-core/data/cache/
+.aios-core/logs/
+.aios-core/data/snapshots/
+
+# Tests
+coverage/
+.nyc_output/
+
+# OS
+Thumbs.db
