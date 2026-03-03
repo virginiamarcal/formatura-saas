@@ -1,8 +1,15 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(gh:*)",
+      "Bash(cat:*)",
+      "Bash(wsl bash:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "browser",
     "context7",
     "desktop-commander"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }
