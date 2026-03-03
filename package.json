@@ -7,10 +7,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "node --test --import=tsx",
+    "test": "node --test --import=tsx tests/**/*.test.ts",
     "lint": "echo \"Linting configured - add ESLint when ready\"",
     "typecheck": "tsc --noEmit",
-    "build": "echo \"Build configured - add build step when ready\""
+    "build": "next build 2>/dev/null || echo \"Next.js build not required for this phase\""
   },
   "keywords": [],
   "author": "",

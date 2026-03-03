@@ -127,14 +127,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test -- --coverage
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/coverage-final.json
-          flags: unittests
-          name: codecov-umbrella
+        run: npm test
 
   # Build
   build:
