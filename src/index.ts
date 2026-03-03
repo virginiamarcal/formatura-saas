@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import proposalRoutes from './routes/proposals.js';
+import attendeesRoutes from './routes/attendees.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,7 @@ app.get('/health', (_req, res) => {
 
 // API Routes
 app.use('/api/proposals', proposalRoutes);
+app.use('/api/events/:eventId/attendees', attendeesRoutes);
 
 // 404 handler
 app.use((_req, res) => {
@@ -38,5 +40,6 @@ app.use((err: unknown, _req: express.Request, res: express.Response) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📝 API: http://localhost:${PORT}/api/proposals`);
+  console.log(`👥 API: http://localhost:${PORT}/api/events/:eventId/attendees`);
   console.log(`🏥 Health: http://localhost:${PORT}/health`);
 });

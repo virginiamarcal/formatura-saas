@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "node --test --import=tsx tests/e2e.test.ts tests/proposals.test.ts tests/xss-prevention.test.ts",
+    "test": "node --test --import=tsx tests/emailService.test.ts tests/attendees.test.ts tests/e2e.test.ts tests/proposals.test.ts tests/xss-prevention.test.ts",
     "lint": "echo \"Linting configured - add ESLint when ready\"",
     "typecheck": "tsc --noEmit",
     "build": "next build 2>/dev/null || echo \"Next.js build not required for this phase\""
