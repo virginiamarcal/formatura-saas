@@ -9,7 +9,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: Lint
+    name: lint
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,7 +21,7 @@ jobs:
 
   typecheck:
     runs-on: ubuntu-latest
-    name: Type Check
+    name: typecheck
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,7 +33,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: Tests
+    name: test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: Build
+    name: build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

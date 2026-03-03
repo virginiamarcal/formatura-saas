@@ -1,8 +1,23 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(gh:*)",
+      "Bash(cat:*)",
+      "Bash(wsl bash:*)",
+      "Bash(git commit:*)",
+      "Bash(git:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(node:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "browser",
     "context7",
     "desktop-commander"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

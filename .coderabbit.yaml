@@ -1,0 +1,292 @@
+# CodeRabbit Configuration for Formatura SaaS
+# Last Updated: 2026-03-03
+# Purpose: Automated code review, security scanning, quality gates
+
+# Review settings
+review:
+  # Always request review on PRs and commits
+  auto_review: true
+
+  # Number of concurrency reviewers to use (1-10)
+  reviewer_count: 2
+
+  # Blocks PR if CRITICAL issues found
+  blocking_review_mode: true
+
+  # Smart chunking of large PRs
+  max_chunks_to_review: 8
+
+  # Fail PR on CRITICAL issues
+  review_severity_level: CRITICAL
+
+# Rules for different file types
+rules:
+  # TypeScript/JavaScript files
+  - pattern: '**/*.{ts,tsx,js,jsx}'
+    rules:
+      - security-audit: true
+      - performance-check: true
+      - type-safety: true
+      - complexity-analysis: true
+    severity: HIGH
+    description: 'Backend and frontend TypeScript/JavaScript files'
+
+  # SQL/Database files
+  - pattern: '**/*.sql'
+    rules:
+      - sql-injection-prevention: true
+      - performance-optimization: true
+      - migration-safety: true
+      - rls-policy-validation: true
+    severity: CRITICAL
+    description: 'Database migrations and SQL scripts'
+
+  # Configuration files
+  - pattern: '**/{package.json,tsconfig.json,.env*,*.yml,*.yaml}'
+    rules:
+      - dependency-audit: true
+      - secrets-detection: true
+      - configuration-validation: true
+    severity: HIGH
+    description: 'Configuration and dependency files'
+
+  # API/Route files
+  - pattern: '**/routes/**/*.ts'
+    rules:
+      - authentication-validation: true
+      - authorization-check: true
+      - input-validation: true
+      - rate-limiting: true
+    severity: CRITICAL
+    description: 'API endpoint files'
+
+  # Database models/schema
+  - pattern: '**/db/**/*.{ts,sql}'
+    rules:
+      - rls-policy-check: true
+      - data-integrity: true
+      - migration-validation: true
+    severity: CRITICAL
+    description: 'Database schema and ORM files'
+
+# Security scanning settings
+security:
+  # Enable security vulnerability scanning
+  vulnerability_scan: true
+
+  # Severity levels to block
+  blocking_severities: [CRITICAL, HIGH]
+
+  # Scan for secrets/credentials
+  secrets_detection: true
+
+  # OWASP Top 10 checks
+  owasp_checks: true
+
+  # CWE vulnerability database
+  cwe_checks: true
+
+  # Specific security checks
+  checks:
+    - sql_injection: true
+    - xss_prevention: true
+    - csrf_prevention: true
+    - authentication_bypass: true
+    - authorization_bypass: true
+    - hardcoded_secrets: true
+    - insecure_crypto: true
+    - unsafe_deserialization: true
+    - path_traversal: true
+    - remote_code_execution: true
+
+# Performance analysis
+performance:
+  # Check for N+1 queries
+  n_plus_one_detection: true
+
+  # Check for inefficient algorithms
+  algorithmic_complexity: true
+
+  # Check for unnecessary re-renders (React)
+  render_optimization: true
+
+  # Check for large bundles
+  bundle_size_check: true
+  bundle_size_limit: 500kb
+
+  # Check for slow database queries
+  query_optimization: true
+
+# Code quality settings
+quality:
+  # Check code complexity (cyclomatic complexity)
+  complexity_threshold: 10
+
+  # Check for code duplication
+  duplication_detection: true
+  duplication_threshold: 3
+
+  # Suggest refactoring
+  refactoring_suggestions: true
+
+  # Check for dead code
+  dead_code_detection: true
+
+  # Best practices enforcement
+  best_practices: true
+
+# Testing requirements
+testing:
+  # Minimum test coverage
+  min_coverage: 80
+
+  # Check for untested code paths
+  coverage_analysis: true
+
+  # Check for missing test cases
+  test_gap_detection: true
+
+  # Check for flaky tests
+  flaky_test_detection: true
+
+# Documentation requirements
+documentation:
+  # Check for docstrings/comments on public APIs
+  api_documentation: true
+
+  # Check for README updates
+  readme_validation: true
+
+  # Check for CHANGELOG updates
+  changelog_validation: true
+
+  # Check for breaking change documentation
+  breaking_change_docs: true
+
+# Exclusions (files/patterns to skip)
+exclude:
+  patterns:
+    - 'node_modules/**'
+    - 'dist/**'
+    - 'build/**'
+    - '.next/**'
+    - 'coverage/**'
+    - '**/*.test.{ts,js}'
+    - '**/*.spec.{ts,js}'
+    - '*.min.js'
+
+  # Exclude specific directories
+  directories:
+    - '.git'
+    - '.github'
+    - '__pycache__'
+    - '.pytest_cache'
+
+# Severity levels and actions
+severity_config:
+  CRITICAL:
+    action: block_merge
+    label: '🔴 CRITICAL'
+    description: 'Security vulnerabilities, data loss risks, breaking changes'
+    examples:
+      - SQL injection
+      - XSS vulnerability
+      - Hardcoded secrets
+      - RLS policy bypass
+      - Missing authentication
+
+  HIGH:
+    action: warn_merge
+    label: '🟠 HIGH'
+    description: 'Performance issues, missing validation, architectural concerns'
+    examples:
+      - N+1 queries
+      - Missing input validation
+      - Inefficient algorithms
+      - Missing error handling
+
+  MEDIUM:
+    action: comment
+    label: '🟡 MEDIUM'
+    description: 'Code quality improvements, best practices'
+    examples:
+      - Code duplication
+      - High complexity
+      - Missing tests
+
+  LOW:
+    action: suggest
+    label: '🟢 LOW'
+    description: 'Minor improvements, style suggestions'
+    examples:
+      - Code style
+      - Naming conventions
+
+# Integration settings
+integrations:
+  # GitHub PR comments
+  github_pr_comments: true
+
+  # Post summary to PR
+  post_summary: true
+
+  # Set status checks
+  status_checks: true
+
+  # Slack notifications (if configured)
+  slack_notifications: false
+
+# Custom prompts for specific files
+custom_prompts:
+  database_migrations:
+    prompt: |
+      Validate this database migration for:
+      1. RLS policy compatibility
+      2. Zero-downtime migration (no locks)
+      3. Rollback script availability
+      4. Index strategy
+      5. ACID compliance
+    severity: CRITICAL
+
+  api_endpoints:
+    prompt: |
+      Validate this API endpoint for:
+      1. Authentication requirement
+      2. Authorization checks
+      3. Input validation (Zod/Joi)
+      4. Error handling
+      5. Rate limiting
+      6. Logging/audit trail
+    severity: CRITICAL
+
+  rls_policies:
+    prompt: |
+      Validate this RLS policy for:
+      1. Correct tenant isolation
+      2. No privilege escalation
+      3. Test coverage (positive + negative cases)
+      4. Performance implications
+    severity: CRITICAL
+
+# Formatting and output
+output:
+  # Report format
+  format: json
+
+  # Save report to file
+  save_report: true
+  report_path: 'docs/qa/coderabbit-reports/'
+
+  # Include detailed explanations
+  include_explanations: true
+
+  # Include code snippets
+  include_code_snippets: true
+
+# Version and changelog
+metadata:
+  version: '1.0'
+  created: '2026-03-03'
+  description: 'CodeRabbit configuration for Formatura SaaS MVP'
+  maintainer: 'Gage (DevOps)'
+  last_updated: '2026-03-03'
