@@ -3,7 +3,9 @@
     "allow": [
       "Bash(gh:*)",
       "Bash(cat:*)",
-      "Bash(wsl bash:*)"
+      "Bash(wsl bash:*)",
+      "Bash(git commit:*)",
+      "Bash(git:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
