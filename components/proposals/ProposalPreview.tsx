@@ -1,5 +1,6 @@
 'use client';
 
+import DOMPurify from 'isomorphic-dompurify';
 import type { ProposalResponse } from '@/src/types/proposal';
 
 interface ProposalPreviewProps {
@@ -11,9 +12,28 @@ export default function ProposalPreview({
   proposal,
   onClose,
 }: ProposalPreviewProps) {
-  const sanitizeHtml = (html: string) => {
-    // Basic HTML sanitization - remove script tags
-    return html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  /**
+   * Sanitize HTML content to prevent XSS attacks
+   * Uses DOMPurify which is battle-tested for XSS prevention
+   * Removes:
+   * - Script tags
+   * - Event handlers (onclick, onerror, etc)
+   * - Iframes and other dangerous elements
+   * - Keeps safe HTML formatting (p, h1-h6, strong, em, ul, ol, li, br, etc)
+   */
+  const sanitizeHtml = (html: string): string => {
+    const config = {
+      ALLOWED_TAGS: [
+        'p', 'br', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'strong', 'em', 'u', 'i', 'b',
+        'ul', 'ol', 'li',
+        'blockquote', 'code', 'pre',
+        'a', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+      ],
+      ALLOWED_ATTR: ['href', 'title', 'target'],
+      KEEP_CONTENT: true,
+    };
+    return DOMPurify.sanitize(html, config);
   };
 
   return (
