@@ -46,4 +46,36 @@ router.post('/', verifyAuth, verifyEventAdmin, ProposalController.createProposal
  */
 router.get('/:id', verifyAuth, ProposalController.getProposal);
 
+/**
+ * POST /api/proposals/:id/send
+ * Send a proposal to committee members (Story 1.2)
+ *
+ * Request body:
+ * {
+ *   "recipient_user_ids": ["uuid1", "uuid2"],
+ *   "custom_message": "Optional message"
+ * }
+ *
+ * Responses:
+ * - 200: Proposal sent successfully
+ * - 400: Validation error
+ * - 401: Unauthorized
+ * - 403: Forbidden (not event admin)
+ * - 404: Proposal not found
+ * - 500: Server error
+ */
+router.post('/:id/send', verifyAuth, verifyEventAdmin, ProposalController.sendProposal);
+
+/**
+ * GET /api/proposals/:id/sends
+ * Fetch send history and recipient status (Story 1.2)
+ *
+ * Responses:
+ * - 200: Send history retrieved
+ * - 401: Unauthorized
+ * - 404: Proposal not found
+ * - 500: Server error
+ */
+router.get('/:id/sends', verifyAuth, ProposalController.getProposalSends);
+
 export default router;

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { ProposalResponse } from '@/src/types/proposal';
+import type { ProposalResponse, SendProposalResponse } from '@/src/types/proposal';
+import { ProposalSendModal } from './ProposalSendModal';
 
 interface ProposalsListProps {
   proposals: ProposalResponse[];
@@ -16,6 +17,9 @@ export default function ProposalsList({ proposals, eventId }: ProposalsListProps
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [selectedProposalForSend, setSelectedProposalForSend] = useState<ProposalResponse | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Filter proposals
   const filteredProposals = proposals.filter(
@@ -58,6 +62,18 @@ export default function ProposalsList({ proposals, eventId }: ProposalsListProps
       default:
         return 'badge';
     }
+  };
+
+  const handleSendClick = (proposal: ProposalResponse) => {
+    setSelectedProposalForSend(proposal);
+    setSendModalOpen(true);
+  };
+
+  const handleSendSuccess = (response: SendProposalResponse) => {
+    setSuccessMessage(`Proposal sent to ${response.recipients_count} members`);
+    setSendModalOpen(false);
+    setSelectedProposalForSend(null);
+    setTimeout(() => setSuccessMessage(null), 5000);
   };
 
   if (proposals.length === 0) {
@@ -125,6 +141,19 @@ export default function ProposalsList({ proposals, eventId }: ProposalsListProps
               <td>{new Date(proposal.created_at).toLocaleDateString()}</td>
               <td>
                 <div className="actions">
+                  {proposal.status === 'draft' && (
+                    <button
+                      className="btn-small btn-primary-small"
+                      onClick={() => handleSendClick(proposal)}
+                    >
+                      Send
+                    </button>
+                  )}
+                  {proposal.status === 'sent' && (
+                    <button className="btn-small btn-sm" disabled title="View send history">
+                      History
+                    </button>
+                  )}
                   <button className="btn-small">Edit</button>
                   <button className="btn-small">Preview</button>
                   <button className="btn-small btn-danger-small">Delete</button>
@@ -140,6 +169,29 @@ export default function ProposalsList({ proposals, eventId }: ProposalsListProps
           Showing {sortedProposals.length} of {proposals.length} proposals
         </p>
       </div>
+
+      {/* Success Toast */}
+      {successMessage && (
+        <div className="toast toast-top toast-end">
+          <div className="alert alert-success">
+            <span>✓ {successMessage}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Send Modal */}
+      {selectedProposalForSend && (
+        <ProposalSendModal
+          proposal={selectedProposalForSend}
+          eventId={eventId}
+          isOpen={sendModalOpen}
+          onClose={() => {
+            setSendModalOpen(false);
+            setSelectedProposalForSend(null);
+          }}
+          onSuccess={handleSendSuccess}
+        />
+      )}
     </div>
   );
 }

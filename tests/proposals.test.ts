@@ -284,4 +284,181 @@ describe('Proposal Validation Tests', () => {
       );
     });
   });
+
+  describe('POST /api/proposals/:id/send Endpoint (Story 1.2)', () => {
+    test('should send proposal to valid recipients', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: {
+          recipient_user_ids: ['user-uuid-1', 'user-uuid-2'],
+          custom_message: 'Please review by Friday',
+        },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      assert.strictEqual(res.statusCode, 200, 'Should return 200 OK');
+      assert.strictEqual(res.jsonData.success, true, 'Should have success: true');
+      assert.strictEqual(res.jsonData.proposal_id, proposalId);
+      assert.strictEqual(res.jsonData.recipients_count, 2);
+      assert.strictEqual(res.jsonData.emails_sent, 2);
+    });
+
+    test('should reject request with no recipients', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: { recipient_user_ids: [] },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      assert.strictEqual(res.statusCode, 400, 'Should return 400 Bad Request');
+      assert.match(res.jsonData.error, /Validation Error/, 'Should be validation error');
+    });
+
+    test('should reject request without recipient_user_ids', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: {},
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      assert.strictEqual(res.statusCode, 400);
+    });
+
+    test('should reject custom message > 1000 characters', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: {
+          recipient_user_ids: ['user-uuid-1'],
+          custom_message: 'a'.repeat(1001),
+        },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      assert.strictEqual(res.statusCode, 400);
+    });
+
+    test('should require user in request', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: {
+          recipient_user_ids: ['user-uuid-1'],
+        },
+        user: undefined,
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      // Should return either 401 or 403 depending on middleware order
+      assert(res.statusCode === 401 || res.statusCode === 403, 'Should return auth error');
+    });
+
+    test('should include send_id in response', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        body: { recipient_user_ids: ['user-uuid-1'] },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.sendProposal(req as any, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert(res.jsonData.send_id, 'Should have send_id');
+      assert(res.jsonData.sent_at, 'Should have sent_at timestamp');
+    });
+  });
+
+  describe('GET /api/proposals/:id/sends Endpoint (Story 1.2)', () => {
+    test('should fetch send history for proposal', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.getProposalSends(req as any, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(res.jsonData.proposal_id, proposalId);
+      assert(Array.isArray(res.jsonData.sends), 'Should have sends array');
+    });
+
+    test('should include recipient list with status', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.getProposalSends(req as any, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert(res.jsonData.sends.length > 0);
+      const firstSend = res.jsonData.sends[0];
+      assert(Array.isArray(firstSend.recipient_list));
+      assert(firstSend.recipient_list[0].status);
+    });
+
+    test('should reject invalid proposal ID', async () => {
+      const req = createMockRequest({
+        params: { id: 'invalid-id' },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.getProposalSends(req as any, res);
+
+      assert.strictEqual(res.statusCode, 400, 'Should reject invalid UUID');
+    });
+
+    test('should require authentication', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        user: undefined,
+      });
+      const res = createMockResponse();
+
+      await ProposalController.getProposalSends(req as any, res);
+
+      // Controller itself returns 401, but middleware may return 403
+      assert(res.statusCode === 401 || res.statusCode === 403, 'Should require authentication');
+    });
+
+    test('should include custom_message in send history', async () => {
+      const proposalId = '550e8400-e29b-41d4-a716-446655440000';
+      const req = createMockRequest({
+        params: { id: proposalId },
+        user: { id: 'admin-uuid' },
+      });
+      const res = createMockResponse();
+
+      await ProposalController.getProposalSends(req as any, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      const firstSend = res.jsonData.sends[0];
+      assert(firstSend.custom_message !== undefined);
+    });
+  });
 });
