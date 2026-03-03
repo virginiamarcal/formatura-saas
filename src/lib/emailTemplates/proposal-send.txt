@@ -1,0 +1,33 @@
+PROPOSTA ENVIADA
+================
+
+Olá {{recipient_name}},
+
+{{admin_name}} compartilhou uma proposta para {{event_name}} com você.
+
+--- DETALHES DA PROPOSTA ---
+
+Título: {{proposal_title}}
+Versão: {{proposal_version}}
+
+Prévia:
+{{proposal_preview}}
+
+{{#custom_message}}
+--- MENSAGEM DO ADMINISTRADOR ---
+
+{{custom_message}}
+
+{{/custom_message}}
+
+--- PRÓXIMOS PASSOS ---
+
+Acesse o link abaixo para visualizar a proposta completa:
+{{proposal_link}}
+
+Se você tiver dúvidas sobre esta proposta, entre em contato com {{admin_name}}.
+
+---
+
+© 2026 Formatura App. Todos os direitos reservados.
+Esta é uma mensagem automática do sistema de propostas.
