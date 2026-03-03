@@ -35,3 +35,45 @@ export interface ApiError {
   error: string;
   details?: unknown;
 }
+
+// === PROPOSAL SEND TYPES (Story 1.2) ===
+
+export interface RecipientStatus {
+  user_id: string;
+  email: string;
+  name?: string;
+  status: 'pending' | 'viewed' | 'approved' | 'rejected';
+  sent_date: string;
+}
+
+export interface ProposalSend {
+  id: string;
+  proposal_id: string;
+  sent_at: string;
+  sent_by: string;
+  recipient_list: RecipientStatus[];
+  custom_message: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SendProposalRequest {
+  recipient_user_ids: string[];
+  custom_message?: string;
+}
+
+export interface SendProposalResponse {
+  success: boolean;
+  proposal_id: string;
+  send_id: string;
+  recipients_count: number;
+  emails_sent: number;
+  failed_emails: string[];
+  sent_at: string;
+  message: string;
+}
+
+export interface ProposalSendHistory {
+  proposal_id: string;
+  sends: ProposalSend[];
+}
