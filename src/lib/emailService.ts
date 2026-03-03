@@ -98,13 +98,13 @@ class EmailService {
     };
 
     try {
-      const templateContent = this.loadTemplate(`${templateName}.html`);
-      const templateText = this.loadTemplate(`${templateName}.txt`).catch(() => ''); // Text is optional
+      const templateContent = await this.loadTemplate(`${templateName}.html`);
+      const templateText = await this.loadTemplate(`${templateName}.txt`).catch(() => ''); // Text is optional
 
       for (const recipient of data.to) {
         try {
           const html = this.renderTemplate(templateContent, { ...data.variables, recipient });
-          const text = await templateText.then((t) => this.renderTemplate(t, { ...data.variables, recipient })).catch(() => '');
+          const text = this.renderTemplate(templateText, { ...data.variables, recipient });
 
           const result = await this.send({
             to: recipient,

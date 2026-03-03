@@ -11,7 +11,7 @@ const router = express.Router({ mergeParams: true });
  */
 router.get('/', async (req, res) => {
   try {
-    const { eventId } = req.params;
+    const { eventId } = req.params as { eventId: string };
 
     // Validate query parameters
     const query = AttendeeListQuerySchema.parse(req.query);
@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:userId', async (req, res) => {
   try {
-    const { eventId, userId } = req.params;
+    const { eventId, userId } = req.params as { eventId: string; userId: string };
 
     const attendee: EventAttendee | null = await attendeesService.getAttendee(eventId, userId);
 
@@ -60,7 +60,7 @@ router.get('/:userId', async (req, res) => {
  */
 router.post('/', async (req, res) => {
   try {
-    const { eventId } = req.params;
+    const { eventId } = req.params as { eventId: string };
 
     // Validate request body
     const attendeeData = CreateAttendeeSchema.parse(req.body);
@@ -87,7 +87,7 @@ router.post('/', async (req, res) => {
  */
 router.delete('/:userId', async (req, res) => {
   try {
-    const { eventId, userId } = req.params;
+    const { eventId, userId } = req.params as { eventId: string; userId: string };
 
     const success = await attendeesService.removeAttendee(eventId, userId);
 
@@ -109,7 +109,7 @@ router.delete('/:userId', async (req, res) => {
  */
 router.get('/search/:term', async (req, res) => {
   try {
-    const { eventId, term } = req.params;
+    const { eventId, term } = req.params as { eventId: string; term: string };
 
     const attendees = await attendeesService.searchAttendees(eventId, term);
 
@@ -127,7 +127,7 @@ router.get('/search/:term', async (req, res) => {
  */
 router.get('/stats/summary', async (req, res) => {
   try {
-    const { eventId } = req.params;
+    const { eventId } = req.params as { eventId: string };
 
     const stats = await attendeesService.getAttendeeStats(eventId);
 
