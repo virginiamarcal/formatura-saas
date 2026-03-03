@@ -5,7 +5,13 @@
       "Bash(cat:*)",
       "Bash(wsl bash:*)",
       "Bash(git commit:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(node:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

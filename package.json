@@ -3,17 +3,34 @@
   "version": "0.1.0",
   "description": "Formatura SaaS Platform",
   "type": "module",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "node src/index.js",
-    "test": "node --test",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "test": "node --test --import=tsx",
     "lint": "echo \"Linting configured - add ESLint when ready\"",
-    "typecheck": "echo \"TypeScript type checking configured\"",
+    "typecheck": "tsc --noEmit",
     "build": "echo \"Build configured - add build step when ready\""
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "@supabase/supabase-js": "^2.98.0",
+    "@types/express": "^5.0.6",
+    "axios": "^1.13.6",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/node": "^25.3.3"
+  }
 }
